@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Phone - Ultra Smooth</title>
+    <!-- Nhúng font chữ Poppins cho hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 1. CẤU HÌNH CHUNG & NỀN ĐẬM */
+        :root {
+            --primary: #4f46e5;      /* Màu tím chủ đạo */
+            --glass: rgba(255, 255, 255, 0.05); /* Độ trong suốt kính mờ */
+            --border: rgba(255, 255, 255, 0.1); /* Viền sắc nét */
+            --text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a; /* Màu xanh đen nền */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Giữ giao diện gọn gàng */
+        }
+
+        /* 2. HIỆU ỨNG CÁC BÓNG NƯỚC (NỀN ĐỘNG) */
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1; /* Nằm sau giao diện chính */
+            animation: move 10s infinite alternate;
+        }
+        .blob-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -50px; }
+        .blob-2 { width: 300px; height: 300px; background: #ec4899; bottom: -50px; right: -50px; animation-delay: 2s; }
+
+        /* 3. BỀ MẶT "KÍNH MỜ" (GLASSMORPHISM) */
+        .dashboard {
+            width: 90%;
+            height: 85%;
+            background: var(--glass);
+            backdrop-filter: blur(20px); /* Mờ phần phía sau đựng nội dung */
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            display: grid;
+            grid-template-columns: 250px 1fr; /* Sidebar trái, Nội dung phải */
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* 4. SIDEBAR (COLUMN TRÁI) */
+        .sidebar {
+            padding: 40px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Khi di chuột vào hoặc đang chọn */
+        .menu-item:hover, .menu-item.active {
+            background: #4f46e5; 
+            color: white;
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        /* 5. NỘI DUNG CHÍNH (TRÁI PHẢI) */
+        .content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* 6. CARDS THỐNG KÊ (HÌNH CHỮ U) */
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.07);
+        }
+
+        .big-number { font-size: 32px; font-weight: 700; }
+        .label { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 5px;}
+
+        /* 7. DEMO PHẦN BÀN PHÍM 3D (Để cảm thấy mượt) */
+        .phone-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .phone-housing {
+            background: #1e1b4b;
+            padding: 20px;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: floatPhone 6s ease-in-out infinite;
+        }
+
+        .screen {
+            width: 280px;
+            height: 350px;
+            background: #252a40;
+            border-radius: 35px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        /* Bàn phím ảo */
+        .kpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .key {
+            background: rgba(255,255,255,0.1);
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s;
+            font-weight: bold;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
+
+        .key:active {
+            transform: translateY(4px);
+            background: var(--primary);
+            box-shadow: none;
+        }
+
+        /* 8. KHUÔN KHẢNG ĐỘNG (ANIMATION) */
+        @keyframes move {
+            from { transform: translate(0, 0); }
+            to { transform: translate(20px, 20px); }
+        }
+        @keyframes floatPhone {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1
+                                  
